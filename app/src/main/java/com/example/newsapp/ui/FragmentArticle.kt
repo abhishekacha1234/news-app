@@ -20,4 +20,4 @@ class FragmentArticle : Fragment() {
     }
 
 
-    }
+}

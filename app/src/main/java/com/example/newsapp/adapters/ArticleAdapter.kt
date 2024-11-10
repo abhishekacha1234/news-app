@@ -1,5 +1,6 @@
 package com.example.newsapp.adapters
 
+
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -8,28 +9,29 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.example.newsapp.R
 import com.example.newsapp.Utils
 import com.example.newsapp.db.Article
 
-class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
+
+class ArticleAdapter() :RecyclerView.Adapter<ArticleHolder>(){
 
     var newslist = listOf<Article>()
-    private var listener: ItemClicklistner? = null
+    private var listener: ItemClicklistner? =null
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleHolder {
-
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.newlist, parent, false )
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.newlist,parent,false)
         val viewHolder = ArticleHolder(view)
         return viewHolder
 
@@ -37,22 +39,28 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
     }
 
     override fun getItemCount(): Int {
+
         return newslist.size
+
     }
 
     override fun onBindViewHolder(holder: ArticleHolder, position: Int) {
 
+
         val article = newslist[position]
 
-        val requestOption = RequestOptions()
 
+        val requestOption = RequestOptions()
 
         holder.itemView.apply {
 
 
-            // for image
 
-            Glide.with(this).load(article.urlToImage).apply(requestOption).listener(object: RequestListener<Drawable>{
+
+            // for images
+
+            Glide.with(this).load(article.urlToImage).apply(requestOption).listener(object:
+                RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -85,7 +93,7 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
             }).transition(DrawableTransitionOptions.withCrossFade()).into(holder.imageView)
 
             holder.textTitle.setText(article.title)
-            holder.tvSource.setText(article.source!!.name)
+            holder.tvSource.setText(article.source.name)
             holder.tvDescription.setText(article.description)
             holder.tvPubslishedAt.setText(Utils.DateFormat(article.publishedAt))
 
@@ -96,8 +104,8 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
 
 
 
-        }
 
+        }
 
         // storing the position and articles in the click event
         // in case we go to another framgnet
@@ -105,34 +113,23 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
             listener?.onItemClicked(position, article)
         }
 
-
-
     }
 
-    fun setItemClickListener(listener : ItemClicklistner){
-        this.listener = listener
-
+    fun setItemClickListener(listener: ItemClicklistner){
+        this. listener = listener
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setlist(articles: List<Article>) {
-        this.newslist = articles
-        notifyDataSetChanged()
+    fun setlist(articles: List<Article>){
 
-    }
-
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun filteredList(newfilteredlist: List<Article>){
-        this.newslist = newfilteredlist
+        this.newslist=articles
         notifyDataSetChanged()
     }
+
+
 
 }
-
-class ArticleHolder(itemView: View) : ViewHolder(itemView){
-
-
+class ArticleHolder(itemView: View) :ViewHolder(itemView){
 
     val textTitle : TextView = itemView.findViewById(R.id.tvTitle)
     val tvSource : TextView = itemView.findViewById(R.id.tvSource)
@@ -142,13 +139,9 @@ class ArticleHolder(itemView: View) : ViewHolder(itemView){
     val imageView : ImageView = itemView.findViewById(R.id.ivArticleImage)
     val pb : ProgressBar = itemView.findViewById(R.id.pbImage)
 
-
-
-
-
 }
-
 interface ItemClicklistner{
 
     fun onItemClicked(position: Int, article: Article)
+    fun showProgressBar()
 }

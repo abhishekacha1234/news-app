@@ -20,4 +20,4 @@ class FragmentSavedNews : Fragment() {
     }
 
 
-    }
+}
