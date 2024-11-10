@@ -1,4 +1,7 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.newsapp.mvvm
+
 
 
 import android.app.Application
@@ -14,9 +17,8 @@ import com.example.newsapp.db.SavedArticle
 import com.example.newsapp.wrapper.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okio.IOException
 import retrofit2.Response
-
+import java.io.IOException
 
 class NewsViewModel(val newsRepo: NewsRepo, application: Application) : AndroidViewModel(application) {
 
@@ -31,24 +33,19 @@ class NewsViewModel(val newsRepo: NewsRepo, application: Application) : AndroidV
     val getSavedNews = newsRepo.getAllSavedNews()
 
     init {
-        getBreakingNews(code="us")
 
-
+        getBreakingNews("us")
     }
 
-    private fun handleBreakingNews(response: Response<News>): Resource<News>? {
-        if(response.isSuccessful) {
-            response.body()?.let {
-                    resultresponse ->
-                return Resource.Success(resultresponse)
-            }
-        }
-        return Resource.Error(response.message())
-    }
 
-    fun getBreakingNews(code: String)=viewModelScope.launch {
+
+    fun getBreakingNews(code: String) = viewModelScope.launch {
+
         checkInternetandBreakingNews(code)
+
+
     }
+
 
     private suspend fun checkInternetandBreakingNews(code: String){
         breakingNews.postValue(Resource.Loading())
@@ -93,7 +90,6 @@ class NewsViewModel(val newsRepo: NewsRepo, application: Application) : AndroidV
 
     }
 
-
     fun getCategory(cat: String) = viewModelScope.launch {
 
         categoryNews.postValue(Resource.Loading())
@@ -103,6 +99,8 @@ class NewsViewModel(val newsRepo: NewsRepo, application: Application) : AndroidV
 
 
     }
+
+
 
 
     // checking connectivity
@@ -134,20 +132,42 @@ class NewsViewModel(val newsRepo: NewsRepo, application: Application) : AndroidV
     }
 
 
+
+    // get category
+
+
+
+
+
+
     fun insertArticle (savedArt: SavedArticle) {
+
         insertNews(savedArt)
     }
 
-    fun insertNews (savedArt: SavedArticle) = viewModelScope.launch(Dispatchers.IO) {
+
+
+    fun insertNews(savedArt: SavedArticle) = viewModelScope.launch(Dispatchers.IO) {
+
+
         newsRepo.insertNews(savedArt)
     }
 
 
-    fun deleteAllArticles() {
+
+    fun deleteAllArtciles() {
+
         deleteAll()
     }
 
+
+
     fun deleteAll() = viewModelScope.launch(Dispatchers.IO) {
+
+
         newsRepo.deleteAll()
+
     }
+
+
 }
