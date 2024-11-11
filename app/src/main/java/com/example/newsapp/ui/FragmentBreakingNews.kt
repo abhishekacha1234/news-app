@@ -1,6 +1,7 @@
 package com.example.newsapp.ui
 
 import android.content.Context
+import android.icu.util.ULocale.Category
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +9,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +25,7 @@ import com.example.newsapp.mvvm.NewsRepo
 import com.example.newsapp.mvvm.NewsViewModel
 import com.example.newsapp.mvvm.NewsViewModelFac
 import com.example.newsapp.wrapper.Resource
+import de.hdodenhof.circleimageview.CircleImageView
 
 abstract class FragmentBreakingNews : Fragment(), ItemClicklistner {
 
@@ -34,32 +38,50 @@ abstract class FragmentBreakingNews : Fragment(), ItemClicklistner {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_breaking_news, container, false)
+        return inflater.inflate(R.layout.fragment_breaking_news, container, false)
 
-        // Initialize RecyclerView and ProgressBar here
-        rv = view.findViewById(R.id.rvBreakingNews)
-        pb = view.findViewById(R.id.paginationProgressBar)
 
-        setUpViewModel()
-        setUpRecyclerView()
 
-        val cm = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val nInfo = cm.activeNetworkInfo
-        if (nInfo != null && nInfo.isConnected) {
-            loadBreakingNews()
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+                }
+
+            // Initialize RecyclerView and ProgressBar here
+            rv = view.findViewById(R.id.rvBreakingNews)
+            pb = view.findViewById(R.id.paginationProgressBar)
+
+            setUpViewModel()
+            setUpRecyclerView()
+
+            val cm =
+                requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val nInfo = cm.activeNetworkInfo
+            if (nInfo != null && nInfo.isConnected) {
+                loadCategortNews()
+            }
+
+            return view
         }
 
-        return view
-    }
+    abstract fun loadCategortNews()
 
-    private fun setUpViewModel() {
-        val dao = NewsDatabase.getInstance(requireActivity()).newsDao
-        val repository = NewsRepo(dao)
-        val factory = NewsViewModelFac(repository, requireActivity().application)
-        viewModel = ViewModelProvider(this, factory)[NewsViewModel::class.java]
-    }
+    fun setUpViewModel() {
 
-    private fun loadBreakingNews() {
+
+
+
+
+
+
+            val dao = NewsDatabase.getInstance(requireActivity()).newsDao
+            val repository = NewsRepo(dao)
+            val factory = NewsViewModelFac(repository, requireActivity().application)
+            viewModel = ViewModelProvider(this, factory)[NewsViewModel::class.java]
+        }
+
+
+    private fun CategoryNews() {
         viewModel.breakingNews.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success -> {
