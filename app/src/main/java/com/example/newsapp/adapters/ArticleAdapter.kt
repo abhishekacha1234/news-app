@@ -131,6 +131,13 @@ class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun filteredList(newfilteredlist: List<Article>){
+        newslist = newfilteredlist
+        notifyDataSetChanged()
+    }
+
+
 }
 
 class ArticleHolder(itemView: View) : ViewHolder(itemView){

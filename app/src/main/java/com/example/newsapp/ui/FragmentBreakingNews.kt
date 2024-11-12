@@ -1,3 +1,4 @@
+
 @file:Suppress("DEPRECATION")
 
 package com.example.newsapiapp.ui
@@ -22,27 +23,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.R
-import com.example.newsapp.adapters.ArticleAdapter
-import com.example.newsapp.adapters.ItemClicklistner
-import com.example.newsapp.mvvm.NewsDatabase
-import com.example.newsapp.mvvm.NewsRepo
-import com.example.newsapp.mvvm.NewsViewModel
-import com.example.newsapp.mvvm.NewsViewModelFac
-import com.example.newsapp.wrapper.Resource
-
+import com.example.newsapiapp.R
+import com.example.newsapiapp.adapters.ArticleAdapter
+import com.example.newsapiapp.adapters.ItemClicklistner
+import com.example.newsapiapp.db.Article
+import com.example.newsapiapp.mvvm.NewsDatabase
+import com.example.newsapiapp.mvvm.NewsRepo
+import com.example.newsapiapp.mvvm.NewsViewModel
+import com.example.newsapiapp.mvvm.NewsViewModelFac
+import com.example.newsapiapp.wrapper.Resource
 import de.hdodenhof.circleimageview.CircleImageView
 
-class FragmentBreakingNewsDirections {
-    companion object {
-        fun <Article> actionFragmentBreakingNewsToFragmentArticle(article: Article): Any {
-
-        }
-    }
-
-}
-
-class FragmentBreakingNews<Article> : Fragment(), ItemClicklistner, MenuProvider{
+class FragmentBreakingNews : Fragment(), ItemClicklistner, MenuProvider{
 
 
     lateinit var viewModel : NewsViewModel
@@ -74,7 +66,7 @@ class FragmentBreakingNews<Article> : Fragment(), ItemClicklistner, MenuProvider
 
         setHasOptionsMenu(true)
 
-        (activity as AppCompatActivity).supportActionBar?.setTitle("Article View")
+
 
         val sportCat: CircleImageView = view.findViewById(R.id.sportsImage)
         val techCat: CircleImageView = view.findViewById(R.id.techImage)
@@ -182,90 +174,238 @@ class FragmentBreakingNews<Article> : Fragment(), ItemClicklistner, MenuProvider
 
             }
 
-            techCat.setOnClickListener(catlistener)
-            breakingImage.setOnClickListener(catlistener)
-            businessCat.setOnClickListener(catlistener)
-            sportCat.setOnClickListener(catlistener)
 
         }
 
+        techCat.setOnClickListener(catlistener)
+        breakingImage.setOnClickListener(catlistener)
+        businessCat.setOnClickListener(catlistener)
+        sportCat.setOnClickListener(catlistener)
 
-        private fun loadBreakingNews() {
-
-            viewModel.breakingNews.observe(viewLifecycleOwner, Observer {response->
 
 
-                when (response){
 
-                    is Resource.Success->{
-                        hideProgressBar()
-                        response.data?.let{newsresponse->
+    }
 
-                            addingResponselist = newsresponse.articles as ArrayList<Article>
-                            newsAdapter.setlist(newsresponse.articles)
 
-                        }
+    private fun loadCategoryNews() {
+
+        viewModel.categoryNews.observe(viewLifecycleOwner, Observer {response->
+
+
+            when (response){
+
+                is Resource.Success->{
+                    hideProgressBar()
+                    response.data?.let{newsresponse->
+
+                        addingResponselist = newsresponse.articles as ArrayList<Article>
+                        newsAdapter.setlist(newsresponse.articles)
+
                     }
-
-
-                    is Resource.Error->{
-                        hideProgressBar()
-                        response.message?.let{messsage->
-                            Log.i("BREAKING FRAG", messsage.toString())
-
-                        }
-                    }
-
-                    is Resource.Loading->{
-                        showProgressBar()
-                    }
-
                 }
 
 
+                is Resource.Error->{
+                    hideProgressBar()
+                    response.message?.let{messsage->
+                        Log.i("BREAKING FRAG", messsage.toString())
 
+                    }
+                }
 
-            })
-        }
-
-
-        fun showProgressBar(){
-
-            pb.visibility = View.VISIBLE
-
-        }
-
-
-        fun hideProgressBar(){
-
-
-            pb.visibility = View.INVISIBLE
-
-
-        }
-
-        private fun setUpRecyclerView() {
-
-            newsAdapter = ArticleAdapter()
-            newsAdapter.setItemClickListener(this)
-            rv.apply {
-                adapter = newsAdapter
-                layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+                is Resource.Loading->{
+                    showProgressBar()
+                }
 
             }
 
 
+
+
+        })
+    }
+
+    private fun loadBreakingNews() {
+
+        viewModel.breakingNews.observe(viewLifecycleOwner, Observer {response->
+
+
+            when (response){
+
+                is Resource.Success->{
+                    hideProgressBar()
+                    response.data?.let{newsresponse->
+
+                        addingResponselist = newsresponse.articles as ArrayList<Article>
+                        newsAdapter.setlist(newsresponse.articles)
+
+                    }
+                }
+
+
+                is Resource.Error->{
+                    hideProgressBar()
+                    response.message?.let{messsage->
+                        Log.i("BREAKING FRAG", messsage.toString())
+
+                    }
+                }
+
+                is Resource.Loading->{
+                    showProgressBar()
+                }
+
+            }
+
+
+
+
+        })
+    }
+
+
+    fun showProgressBar(){
+
+        pb.visibility = View.VISIBLE
+
+    }
+
+
+    fun hideProgressBar(){
+
+
+        pb.visibility = View.INVISIBLE
+
+
+    }
+
+    private fun setUpRecyclerView() {
+
+        newsAdapter = ArticleAdapter()
+        newsAdapter.setItemClickListener(this)
+        rv.apply {
+            adapter = newsAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+
         }
 
-        override fun onItemClicked(position: Int, article: Article) {
+
+    }
+
+    override fun onItemClicked(position: Int, article: Article) {
 
 // GOING TO ANOTHER FRAGMENT
 
-            val action = FragmentBreakingNewsDirections.actionFragmentBreakingNewsToFragmentArticle(article)
-            view?.findNavController()?.navigate(action)
+        val action = FragmentBreakingNewsDirections.actionFragmentBreakingNewsToFragmentArticle(article)
+        view?.findNavController()?.navigate(action)
 
-            Toast.makeText(context, "check ${article.title}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "check ${article.title}", Toast.LENGTH_SHORT).show()
+
+
+
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+
+        menuInflater.inflate(R.menu.menu, menu)
+
+        val deleteIcon = menu.findItem(R.id.deleteAll)
+        deleteIcon.setVisible(false)
+
+        val menuItem = menu.findItem(R.id.searchNews)
+        val searchView = menuItem.actionView as androidx.appcompat.widget.SearchView
+
+
+        searchView.setOnSearchClickListener {
+
+
+            val savedIcon = menu.findItem(R.id.savedNewsFrag)
+            savedIcon.setVisible(false)
+            isOpened = true
+
+
+        }
+
+
+        searchView.queryHint = "Search News"
+
+        searchView.setOnCloseListener(androidx.appcompat.widget.SearchView.OnCloseListener {
+            isOpened
+
+            val savedIcon = menu.findItem(R.id.savedNewsFrag)
+            savedIcon.setVisible(true)
+            isOpened.not()
+
+        })
+
+
+        searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+
+                newFilterItems(p0)
+
+                return true
+
+
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+
+                newFilterItems(p0)
+
+                return true
+
+
+            }
+
+
+        })
+
+        super.onCreateOptionsMenu(menu, menuInflater)
+
+
+    }
+
+    private fun newFilterItems(p0: String?) {
+
+        var newfilteredlist = arrayListOf<Article>()
+
+        for (i in addingResponselist) {
+
+
+
+            if (i.title!!.contains(p0!!)) {
+
+                newfilteredlist.add(i)
+            }
+
+
 
 
 
         }
+
+        setUpRecyclerView()
+        newsAdapter.filteredList(newfilteredlist)
+
+
+
+
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+
+
+        if (menuItem.itemId == R.id.savedNewsFrag){
+
+            view?.findNavController()?.navigate(R.id.action_fragmentBreakingNews_to_fragmentSavedNews)
+        }
+
+
+        return true
+
+    }
+
+
+}
