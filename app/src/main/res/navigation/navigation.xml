@@ -25,6 +25,15 @@
         <action
             android:id="@+id/action_fragmentArticle_to_fragmentBreakingNews"
             app:destination="@id/fragmentBreakingNews" />
+        <argument android:name="article"
+            app:aegType="com.example.newsapiapp.db.Article"
+
+
+
+            />
+        <argument
+            android:name="articlee"
+            app:argType="org.codehaus.groovy.transform.tailrec.VariableReplacedListener$1" />
     </fragment>
     <fragment
         android:id="@+id/fragmentSavedNews"

@@ -22,6 +22,7 @@ import com.example.newsapiapp.R
 import com.example.newsapiapp.Utils
 import com.example.newsapiapp.db.Article
 import com.example.newsapp.R
+import com.example.newsapp.Utils
 
 class ArticleAdapter() : RecyclerView.Adapter<ArticleHolder>() {
 
